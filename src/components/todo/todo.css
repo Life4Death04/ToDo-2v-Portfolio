@@ -1,0 +1,176 @@
+:root{
+    --orange-buttons: #f3573f;
+    --blue-text-icon: #2c3a68;
+    --gray-inputs-background: #ebecef;
+    --gray-checked-tasks: #908e8e;
+}
+
+.todo-container{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    width: 600px; height: auto; max-height: 650px;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+span{
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--blue-text-icon);
+}
+
+.input-task-container{
+    position: relative;
+}
+
+#input-task{
+    background-color: var(--gray-inputs-background);
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    width: 100%;
+}
+
+#addTask-btn{
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    background-color: var(--orange-buttons);
+    color: #fff;
+    font-size: 1.2rem;
+    width: fit-content;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+}
+
+#addTask-btn:hover{
+    cursor: pointer;
+}
+
+.todo-tasks-content{
+    width: 100%;
+    min-height: 200px;
+    overflow-y: auto;
+    border-radius: 10px;
+}
+
+.task-container{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem 0;
+    margin-bottom: 1rem;
+}
+
+.checkTask-btn-false::before{
+    content: '';
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border: 50%;
+    background-image: url('../../assets/icons/unchecked.png');
+    background-size: cover;
+    background-position: center;
+    left: 8px;
+}
+
+.checkTask-btn-active::before{
+    content: '';
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border: 50%;
+    background-image: url('../../assets/icons/checked.png');
+    background-size: cover;
+    background-position: center;
+    left: 8px;
+}
+
+.checkTask-btn-false:hover{
+    cursor: pointer;
+}
+
+.checkTask-btn-active:hover{
+    cursor: pointer;
+}
+
+.descriptionTask-active{
+    font-size: 1.2rem;
+    padding-left: 3rem;
+    text-decoration: line-through;
+    color: var(--gray-checked-tasks);
+}   
+
+.descriptionTask-false{
+    font-size: 1.2rem;
+    padding-left: 3rem;
+}   
+
+.deleteTask-btn{
+    margin-left: auto;
+    background-color: #fff;
+}
+
+.deleteTask-btn:hover{
+    cursor: pointer;
+}
+
+/*MODAL MESSAGE STYLE*/
+.modalOverlay{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .4);
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent{
+    height: fit-content;
+    background-color: #fff;
+    padding: 2rem; margin: 8rem;
+    border-radius: 15px;
+    box-shadow: .1rem .1rem .1rem .1rem rgba(0, 0, 0, .5);
+}
+
+.modalContent p{
+    font-size: 1.5rem;
+}
+
+@media(max-width: 768px){
+    .todo-container{
+        width: 80vw;
+        height: auto;
+        max-height: 600px;
+    }
+
+    .modalContent p{
+        font-size: 1rem;
+    }
+}
+
+@media(max-width: 550px){
+    .icon{
+        font-size: 1.5rem;
+    }
+
+    #input-task, #addTask-btn{
+        padding: .8rem 1rem;    
+        font-size: 1rem;
+    }
+
+    .descriptionTask-active, .descriptionTask-false{
+        font-size: 1rem;
+    }
+
+    .modalContent{
+        padding: 1rem;
+        margin: 7rem .8rem 0 .8rem;
+    }
+}
