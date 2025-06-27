@@ -6,6 +6,7 @@ const initialTask = [
     {id: -1, description: 'It WOOOOORKS :D', done:true},
 ]
 
+//-------------START-------TASK COMPONENT------------START---------------//
 function Task({id, description, done, onCheck, onDelete}){
     return(
         <li key={id} className='task-container'>
@@ -17,7 +18,9 @@ function Task({id, description, done, onCheck, onDelete}){
         </li>
     );
 }
+//-------------END-------TASK COMPONENT------------END---------------//
 
+//------------START-----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------START-----------//
 function ModalMessage({isOpen, onClose}){
     if (!isOpen) return null; //It is a common React pattern used to conditionally render the component. It means: "If the modal is not supposed to be open, don't render anything."
 
@@ -29,13 +32,40 @@ function ModalMessage({isOpen, onClose}){
         </div>
     );
 }
+//-------------END----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------END-----------//
 
+/*------START-----------COMPONENT OF FILTERABLE BUTTONS-------------START--------*/
+function FilterButtons({
+    currentFilter,
+    itemsLeft, //Prop to show how many actives task there are
+    onClear, //Prop (function) to clear those completed tasks
+    onChange //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
+    }){  
+    return(
+        <section className="filterButtons-section">
+            <span>{itemsLeft} {itemsLeft > 1 ? 'items' : 'item'} left</span>
+                <div className="filterButtons-container">
+                    <button className={currentFilter === 'active' ? 'filterButtons active' : 'filterButtons'} onClick={() => 
+                        //Since we are passing setFilter function to onChange, onChange works as a setFilter
+                        onChange('active')}>Active</button>
+                    <button className={currentFilter === 'all' ? 'filterButtons allFilter active' : 'filterButtons allFilter'}  onClick={() => onChange('all')}>All</button>
+                    <button className={currentFilter === 'completed' ? 'filterButtons active' : 'filterButtons'}  onClick={() => onChange('completed')}>Completed</button>
+                </div>
+            <button className='filterButtons clearTask' onClick={onClear}>Clear Completed</button>
+        </section>
+    );
+}
+/*------END-----------COMPONENT OF FILTERABLE BUTTONS-------------END--------*/
+
+
+//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
 export default function ToDo(){
     const [taskState, setTaskState] = useState(initialTask);
-    const [nextId, setNextId] = useState(0);
     const [inputTaskValue, setInputTaskValue] = useState('');
-    //Code for the modal operations
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [nextId, setNextId] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false); //Code for the modal operations
+    
+    let pendingTasks = taskState.filter(t => !t.done).length;
 
     //State for filterable buttons
     const [filter, setFilter] = useState('all');
@@ -45,8 +75,7 @@ export default function ToDo(){
         return true;
     })
 
-    let pendingTasks = taskState.filter(t => !t.done).length;
-
+    //-----------START-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS------------START------------
     /*I just lift up the code to let the father component to manage all the functions. Because I think is dumb
     let the childs having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
     of functions and no.*/
@@ -88,6 +117,7 @@ export default function ToDo(){
     function clearTasksCompleted(){
         setTaskState(taskState.filter(t => t.done !== true));
     }
+    //-----------END-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS--------------END----------
 
     return(
         <div>
@@ -120,25 +150,4 @@ export default function ToDo(){
         </div>
     );
 }
-
-/*Component of filterable buttons, with its props for the functions*/
-function FilterButtons({
-    currentFilter,
-    itemsLeft, //Prop to show how many actives task there are
-    onClear, //Prop (function) to clear those completed tasks
-    onChange //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
-    }){  
-    return(
-        <section className="filterButtons-section">
-            <span>{itemsLeft} items left</span>
-                <div className="filterButtons-container">
-                    <button className={currentFilter === 'active' ? 'filterButtons active' : 'filterButtons'} onClick={() => 
-                        //Since we are passing setFilter function to onChange, onChange works as a setFilter
-                        onChange('active')}>Active</button>
-                    <button className={currentFilter === 'all' ? 'filterButtons allFilter active' : 'filterButtons allFilter'}  onClick={() => onChange('all')}>All</button>
-                    <button className={currentFilter === 'completed' ? 'filterButtons active' : 'filterButtons'}  onClick={() => onChange('completed')}>Completed</button>
-                </div>
-            <button className='filterButtons clearTask' onClick={onClear}>Clear Completed</button>
-        </section>
-    );
-}
+//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
