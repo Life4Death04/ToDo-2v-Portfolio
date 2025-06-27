@@ -203,3 +203,8 @@
 .allFilter{
     margin: 0 .8rem;
 }
+
+.active{
+    font-weight: bold;
+    color: rgba(0, 0, 0, 1);
+}
