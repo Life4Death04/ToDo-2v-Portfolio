@@ -30,17 +30,14 @@ function ModalMessage({isOpen, onClose}){
     );
 }
 
-function FilterButtons(){
-
-}
-
 export default function ToDo(){
     const [taskState, setTaskState] = useState(initialTask);
     const [nextId, setNextId] = useState(0);
     const [inputTaskValue, setInputTaskValue] = useState('');
-
     //Code for the modal operations
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    let pendingTasks = taskState.filter(t => !t.done).length;
 
     /*I just lift up the code to let the father component to manage all the functions. Because I think is dumb
     let the childs having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
@@ -80,6 +77,10 @@ export default function ToDo(){
        setTaskState(taskState.filter(t => t.id !== taskId));
     }
 
+    function clearTasksCompleted(){
+        setTaskState(taskState.filter(t => t.done !== true));
+    }
+
     return(
         <div>
             <div className="todo-container">
@@ -97,18 +98,24 @@ export default function ToDo(){
                         )
                     })}
                 </ul>
-                <section className="filterButtons-section">
-                    <span>X items left</span>
-                    <div className="filterButtons-container">
-                        <button className='filterButtons activeFilter'>Active</button>
-                        <button className='filterButtons allFilter'>All</button>
-                        <button className='filterButtons completedFilter'>Completed</button>
-                    </div>
-                    <button className='filterButtons clearTask'>Clear Completed</button>
-                </section>
+                <FilterButtons itemsLeft={pendingTasks} onClear={clearTasksCompleted}></FilterButtons>
             </div>
             
             <ModalMessage isOpen={isModalOpen} onClose={() => {setIsModalOpen(false)}}></ModalMessage>
         </div>
+    );
+}
+
+function FilterButtons({itemsLeft, onClear}){ 
+    return(
+        <section className="filterButtons-section">
+            <span>{itemsLeft} items left</span>
+                <div className="filterButtons-container">
+                    <button className='filterButtons activeFilter'>Active</button>
+                    <button className='filterButtons allFilter'>All</button>
+                    <button className='filterButtons completedFilter'>Completed</button>
+                </div>
+            <button className='filterButtons clearTask' onClick={onClear}>Clear Completed</button>
+        </section>
     );
 }
