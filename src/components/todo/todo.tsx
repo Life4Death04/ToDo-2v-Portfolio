@@ -30,6 +30,10 @@ function ModalMessage({isOpen, onClose}){
     );
 }
 
+function FilterButtons(){
+
+}
+
 export default function ToDo(){
     const [taskState, setTaskState] = useState(initialTask);
     const [nextId, setNextId] = useState(0);
@@ -93,11 +97,18 @@ export default function ToDo(){
                         )
                     })}
                 </ul>
+                <section className="filterButtons-section">
+                    <span>X items left</span>
+                    <div className="filterButtons-container">
+                        <button className='filterButtons activeFilter'>Active</button>
+                        <button className='filterButtons allFilter'>All</button>
+                        <button className='filterButtons completedFilter'>Completed</button>
+                    </div>
+                    <button className='filterButtons clearTask'>Clear Completed</button>
+                </section>
             </div>
             
             <ModalMessage isOpen={isModalOpen} onClose={() => {setIsModalOpen(false)}}></ModalMessage>
         </div>
     );
 }
-
-

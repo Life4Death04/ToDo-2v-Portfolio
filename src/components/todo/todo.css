@@ -17,7 +17,7 @@
     border-radius: 10px;
 }
 
-span{
+.icon{
     font-size: 1.6rem;
     font-weight: bold;
     color: var(--blue-text-icon);
@@ -173,4 +173,33 @@ span{
         padding: 1rem;
         margin: 7rem .8rem 0 .8rem;
     }
+}
+
+
+/*Filter Buttons Section*/
+.filterButtons-section{
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: .5rem 0;
+    color: rgba(0, 0, 0, .5);
+    border-top: 2px solid #000;
+}
+
+
+.filterButtons{
+    font-size: 1rem;
+    background-color: transparent;
+    color: rgba(0, 0, 0, .5);
+}
+
+.filterButtons:hover{
+    cursor: pointer;
+    color: rgba(0, 0, 0, 1);
+}
+
+.allFilter{
+    margin: 0 .8rem;
 }
