@@ -4,10 +4,13 @@ import {useState} from 'react';
 
 const initialTask = [
     {id: -1, description: 'It WOOOOORKS :D', done:true},
+    {id: 0, description: 'Implementar TypeScript', done: false},
+    {id: 1, description: 'Implementar JSDoc (manera de documentar)', done: false},
+    {id: 2, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: false}
 ]
 
 //-------------START-------TASK COMPONENT------------START---------------//
-function Task({id, description, done, onCheck, onDelete}){
+function Task({id, description, done, onCheck, onDelete}){ //Change Task for TaskItem
     return(
         <li key={id} className='task-container'>
             <span className={done ? 'checkTask-btn-active' : 'checkTask-btn-false'} onClick={onCheck}></span>
@@ -35,21 +38,26 @@ function ModalMessage({isOpen, onClose}){
 //-------------END----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------END-----------//
 
 /*------START-----------COMPONENT OF FILTERABLE BUTTONS-------------START--------*/
+type currentFilterStatus = 'active' | 'all' | 'completed';
+
 function FilterButtons({
     currentFilter,
     itemsLeft, //Prop to show how many actives task there are
     onClear, //Prop (function) to clear those completed tasks
     onChange //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
     }){  
+
+    const isActive = (filter:currentFilterStatus) => `filterButtons ${currentFilter === filter ? 'active' : ''}`;
+
     return(
         <section className="filterButtons-section">
             <span>{itemsLeft} {itemsLeft > 1 ? 'items' : 'item'} left</span>
                 <div className="filterButtons-container">
-                    <button className={currentFilter === 'active' ? 'filterButtons active' : 'filterButtons'} onClick={() => 
+                    <button className={isActive('active')} onClick={() => 
                         //Since we are passing setFilter function to onChange, onChange works as a setFilter
                         onChange('active')}>Active</button>
-                    <button className={currentFilter === 'all' ? 'filterButtons allFilter active' : 'filterButtons allFilter'}  onClick={() => onChange('all')}>All</button>
-                    <button className={currentFilter === 'completed' ? 'filterButtons active' : 'filterButtons'}  onClick={() => onChange('completed')}>Completed</button>
+                    <button className={isActive('all')}  onClick={() => onChange('all')}>All</button>
+                    <button className={isActive('completed')}  onClick={() => onChange('completed')}>Completed</button>
                 </div>
             <button className='filterButtons clearTask' onClick={onClear}>Clear Completed</button>
         </section>
@@ -94,13 +102,18 @@ export default function ToDo(){
         }
     }
 
+    /**
+     * Toggle 
+     * @param taskId asdfasvzxcz
+     */
     function checkTask(taskId){
         /*For this function, we dont have to return or copy all the element in the array, why?
         Because, .map already make an array with all the elements and same length so, we can modify
         the element that we want implementing 'taskId === t.id' in that way when we reach that 
         element, we will modify it (remebering that we have to copy their old props). Otherwise,
         we'll just return the elements that doesn't match with the condition.*/
-        let newTasks = taskState.map(t => {
+
+        let newTasks = taskState.map(t => { //Change let for const & find a better way to check tasks
             if(taskId === t.id){
                 return {...t, done: !t.done}
             }else{
@@ -118,7 +131,9 @@ export default function ToDo(){
         setTaskState(taskState.filter(t => t.done !== true));
     }
     //-----------END-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS--------------END----------
-
+    function handleFilterChange(text:string){
+        setFilter(text);
+    }
     return(
         <div>
             <div className="todo-container">
@@ -141,7 +156,7 @@ export default function ToDo(){
                     currentFilter={filter}
                     itemsLeft={pendingTasks} //Passing prop (variable) of how many items
                     onClear={clearTasksCompleted} //Passing prop (function) to clear items
-                    onChange={setFilter} //Passing prop (functions) to setFilter(value)
+                    onChange={handleFilterChange} //Passing prop (functions) to setFilter(value)
                 > 
                 </FilterButtons>
             </div>

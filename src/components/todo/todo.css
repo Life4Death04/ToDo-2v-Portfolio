@@ -161,6 +161,10 @@
     border-top: 1px solid #000;
 }
 
+.filterButtons-container{
+    display: flex;
+    gap: .8rem;
+}
 
 .filterButtons{
     font-size: 1rem;
@@ -171,10 +175,6 @@
 .filterButtons:hover{
     cursor: pointer;
     color: rgba(0, 0, 0, 1);
-}
-
-.allFilter{
-    margin: 0 .8rem;
 }
 
 .active{
