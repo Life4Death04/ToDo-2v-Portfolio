@@ -14,7 +14,6 @@ const initialTask: InitialTaskType[] = [
     {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true}
 ]
 
-//-------------START-------TASK COMPONENT------------START---------------//
 type TaskItemProps = {
     id: number;
     description: string;
@@ -23,6 +22,14 @@ type TaskItemProps = {
     onDelete: () => void; //Function to delete the task
 }
 
+/**
+ * @description TaskItem component represents a single task in the to-do list.
+ * @param id{string} - The unique identifier for the task
+ * @param description{string} - The description of the task
+ * @param done{boolean} - Indicates whether the task is completed or not
+ * @param onCheck{function} - Function to handle the task check action
+ * @param onDelete{function} - Function to handle the task delete action
+ */
 function TaskItem({id, description, done, onCheck, onDelete}: TaskItemProps){ //Change Task for TaskItem
     return(
         <li key={id} className='task-container'>
@@ -34,14 +41,17 @@ function TaskItem({id, description, done, onCheck, onDelete}: TaskItemProps){ //
         </li>
     );
 }
-//-------------END-------TASK COMPONENT------------END---------------//
 
-//------------START-----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------START-----------//
 type ModalMessageProps = {    
     isOpen: boolean; //Prop to know if the modal is open or not
     onClose: () => void; //Prop to close the modal
 }
 
+/**
+ * @description Component displays a modal message when the user tries to add an empty task.
+ * @param isOpen {boolean} - Indicates whether the modal is open or not
+ * @param onClose {function} - Function to close the modal
+ */
 function ModalMessage({isOpen, onClose}:ModalMessageProps){
     if (!isOpen) return null; //It is a common React pattern used to conditionally render the component. It means: "If the modal is not supposed to be open, don't render anything."
 
@@ -53,9 +63,7 @@ function ModalMessage({isOpen, onClose}:ModalMessageProps){
         </div>
     );
 }
-//-------------END----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------END-----------//
 
-/*------START-----------COMPONENT OF FILTERABLE BUTTONS-------------START--------*/
 type currentFilterStatus = 'active' | 'all' | 'completed';
 
 type FilterButtonsProps = {
@@ -65,6 +73,11 @@ type FilterButtonsProps = {
     onChange: (filter: currentFilterStatus) => void; //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
 }
 
+/**
+ * @description This component allows the user to filter tasks based on their status and clear completed tasks
+ * @param currentFilter {currentFilterStatus} - The current filter status (active, all, completed)
+ * @param itemsLeft {number} - The number of active tasks left
+ */
 function FilterButtons({
     currentFilter,
     itemsLeft, //Prop to show how many actives task there are
@@ -88,17 +101,18 @@ function FilterButtons({
         </section>
     );
 }
-/*------END-----------COMPONENT OF FILTERABLE BUTTONS-------------END--------*/
 
-
-//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
+/**
+ * @description ToDo component is the main component that manages the state of the to-do list, including adding, checking, deleting tasks, and filtering them.
+ */
 export default function ToDo(){
-    const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask);
-    const [inputTaskValue, setInputTaskValue] = useState<string>('');
-    const [nextId, setNextId] = useState<number>(0);
+    //State for the list of tasks
+    const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask); //Initial tasks for the to-do list
+    const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
+    const [nextId, setNextId] = useState<number>(0); //Next id for the task
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
     
-    let pendingTasks:number = taskState.filter(t => !t.done).length;
+    let pendingTasks:number = taskState.filter(t => !t.done).length; // Count how many tasks are not done
 
     //State for filterable buttons
     const [filter, setFilter] = useState<currentFilterStatus>('all');
@@ -108,7 +122,6 @@ export default function ToDo(){
         return true;
     })
 
-    //-----------START-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS------------START------------
     /*I just lift up the code to let the father component to manage all the functions. Because I think is dumb
     let the childs having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
     of functions and no.*/
@@ -128,10 +141,10 @@ export default function ToDo(){
     }
 
     function checkTask(taskId: number): void{
-        /*For this function, we dont have to return or copy all the element in the array, why?
+        /*For this function, we don't have to return or copy all the element in the array, why?
         Because, .map already make an array with all the elements and same length so, we can modify
         the element that we want implementing 'taskId === t.id' in that way when we reach that 
-        element, we will modify it (remebering that we have to copy their old props). Otherwise,
+        element, we will modify it (remembering that we have to copy their old props). Otherwise,
         we'll just return the elements that doesn't match with the condition.*/
 
         let newTasks = taskState.map(t => { //Change let for const & find a better way to check tasks
@@ -151,7 +164,7 @@ export default function ToDo(){
     function clearTasksCompleted(): void{
         setTaskState(taskState.filter(t => t.done !== true));
     }
-    //-----------END-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS--------------END----------
+
     function handleFilterChange(text: currentFilterStatus): void{
         setFilter(text);
     }
@@ -186,4 +199,3 @@ export default function ToDo(){
         </div>
     );
 }
-//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
