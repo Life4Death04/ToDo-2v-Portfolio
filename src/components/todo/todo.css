@@ -13,6 +13,7 @@
 
 .dark {
     --background: #1e293b;
+    --foreground: #2c3a68;
     --color-text: #fff;
     --color-text-icon: #fff;
     --color-text-filter-buttons: #637084;
@@ -103,8 +104,10 @@ header{
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: .8rem 0;
+    background-color: var(--input-background);
+    padding: .8rem 1rem;
     margin-bottom: 1rem;
+    border-radius: 10px;
 }
 
 .checkTask-btn-false::before{
@@ -154,7 +157,7 @@ header{
 
 .deleteTask-btn{
     margin-left: auto;
-    background-color: var(--background);
+    background-color: transparent;
     color: var(--color-action-buttons);
 }
 
@@ -198,7 +201,7 @@ header{
     justify-content: space-around;
     padding: .5rem 0;
     color: var(--color-text-filter-buttons);
-    border-top: 1px solid #000;
+    border-top: 1px solid var(--color-text);
 }
 
 .filterButtons-container{
