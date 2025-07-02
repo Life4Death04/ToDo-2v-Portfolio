@@ -201,6 +201,10 @@ header{
     border-top: 1px solid #000;
 }
 
+.filterButtons-container{
+    display: flex;
+    gap: 2rem;
+}
 
 .filterButtons{
     font-size: 1rem;

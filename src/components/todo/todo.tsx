@@ -6,10 +6,6 @@ import { FiMoon } from "react-icons/fi";
 import {useState} from 'react';
 import {useEffect} from 'react';
 
-<<<<<<< Updated upstream
-const initialTask = [
-    {id: -1, description: 'It WOOOOORKS :D', done:true},
-=======
 interface InitialTaskType {
     id: number;
     description: string;
@@ -20,11 +16,25 @@ const initialTask: InitialTaskType[] = [
     {id: -1, description: 'Implementar TypeScript', done: true},
     {id: -2, description: 'Implementar JSDoc (manera de documentar)', done: true},
     {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true}
->>>>>>> Stashed changes
 ]
 
-//-------------START-------TASK COMPONENT------------START---------------//
-function Task({id, description, done, onCheck, onDelete}){
+type TaskItemProps = {
+    id: number;
+    description: string;
+    done: boolean;
+    onCheck: () => void; //Function to check the task
+    onDelete: () => void; //Function to delete the task
+}
+
+/**
+ * @description TaskItem component represents a single task in the to-do list.
+ * @param id{string} - The unique identifier for the task
+ * @param description{string} - The description of the task
+ * @param done{boolean} - Indicates whether the task is completed or not
+ * @param onCheck{function} - Function to handle the task check action
+ * @param onDelete{function} - Function to handle the task delete action
+ */
+function TaskItem({id, description, done, onCheck, onDelete}: TaskItemProps){ //Change Task for TaskItem
     return(
         <li key={id} className='task-container'>
             <span className={done ? 'checkTask-btn-active' : 'checkTask-btn-false'} onClick={onCheck}></span>
@@ -35,10 +45,18 @@ function Task({id, description, done, onCheck, onDelete}){
         </li>
     );
 }
-//-------------END-------TASK COMPONENT------------END---------------//
 
-//------------START-----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------START-----------//
-function ModalMessage({isOpen, onClose}){
+type ModalMessageProps = {    
+    isOpen: boolean; //Prop to know if the modal is open or not
+    onClose: () => void; //Prop to close the modal
+}
+
+/**
+ * @description Component displays a modal message when the user tries to add an empty task.
+ * @param isOpen {boolean} - Indicates whether the modal is open or not
+ * @param onClose {function} - Function to close the modal
+ */
+function ModalMessage({isOpen, onClose}:ModalMessageProps){
     if (!isOpen) return null; //It is a common React pattern used to conditionally render the component. It means: "If the modal is not supposed to be open, don't render anything."
 
     return(
@@ -49,67 +67,74 @@ function ModalMessage({isOpen, onClose}){
         </div>
     );
 }
-//-------------END----------COMPONENT MODAL MESSAGE FOR EMPTY TASKS INPUTS--------END-----------//
 
-/*------START-----------COMPONENT OF FILTERABLE BUTTONS-------------START--------*/
+type currentFilterStatus = 'active' | 'all' | 'completed';
+
+type FilterButtonsProps = {
+    currentFilter: currentFilterStatus; //Prop to know which filter is active
+    itemsLeft: number; //Prop to show how many active tasks there are
+    onClear: () => void; //Prop (function) to clear those completed tasks
+    onChange: (filter: currentFilterStatus) => void; //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
+}
+
+/**
+ * @description This component allows the user to filter tasks based on their status and clear completed tasks
+ * @param currentFilter {currentFilterStatus} - The current filter status (active, all, completed)
+ * @param itemsLeft {number} - The number of active tasks left
+ */
 function FilterButtons({
     currentFilter,
     itemsLeft, //Prop to show how many actives task there are
     onClear, //Prop (function) to clear those completed tasks
     onChange //Prop (function) to change the value because when we click on the buttons onChange becomes setFilter
-    }){  
+    }: FilterButtonsProps){  
+
+    const isActive = (filter:currentFilterStatus) => `filterButtons ${currentFilter === filter ? 'active' : ''}`;
+
     return(
         <section className="filterButtons-section">
             <span>{itemsLeft} {itemsLeft > 1 ? 'items' : 'item'} left</span>
                 <div className="filterButtons-container">
-                    <button className={currentFilter === 'active' ? 'filterButtons active' : 'filterButtons'} onClick={() => 
+                    <button className={isActive('active')} onClick={() => 
                         //Since we are passing setFilter function to onChange, onChange works as a setFilter
                         onChange('active')}>Active</button>
-                    <button className={currentFilter === 'all' ? 'filterButtons allFilter active' : 'filterButtons allFilter'}  onClick={() => onChange('all')}>All</button>
-                    <button className={currentFilter === 'completed' ? 'filterButtons active' : 'filterButtons'}  onClick={() => onChange('completed')}>Completed</button>
+                    <button className={isActive('all')}  onClick={() => onChange('all')}>All</button>
+                    <button className={isActive('completed')}  onClick={() => onChange('completed')}>Completed</button>
                 </div>
             <button className='filterButtons clearTask' onClick={onClear}>Clear Completed</button>
         </section>
     );
 }
-/*------END-----------COMPONENT OF FILTERABLE BUTTONS-------------END--------*/
 
-
-//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
+/**
+ * @description ToDo component is the main component that manages the state of the to-do list, including adding, checking, deleting tasks, and filtering them.
+ */
 export default function ToDo(){
-<<<<<<< Updated upstream
-    const [taskState, setTaskState] = useState(initialTask);
-    const [inputTaskValue, setInputTaskValue] = useState('');
-    const [nextId, setNextId] = useState(0);
-    const [isModalOpen, setIsModalOpen] = useState(false); //Code for the modal operations
-=======
     //State for the list of tasks
     const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask); //Initial tasks for the to-do list
     const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
     const [nextId, setNextId] = useState<number>(0); //Next id for the task
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
     const [darkMode, setDarkMode] = useState<boolean>(false) //State for dark mode toggle
->>>>>>> Stashed changes
     
-    let pendingTasks = taskState.filter(t => !t.done).length;
+    let pendingTasks:number = taskState.filter(t => !t.done).length; // Count how many tasks are not done
 
     useEffect(() => {
         document.body.className = darkMode ? 'dark' : ''; //Change the body class to dark or light mode
     }, [darkMode]); //This effect will run whenever darkMode changes
 
     //State for filterable buttons
-    const [filter, setFilter] = useState('all');
+    const [filter, setFilter] = useState<currentFilterStatus>('all');
     let filterList = taskState.filter(t => {
         if(filter === 'active') return !t.done;
         if(filter === 'completed') return t.done;
         return true;
     })
 
-    //-----------START-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS------------START------------
     /*I just lift up the code to let the father component to manage all the functions. Because I think is dumb
     let the child having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
     of functions and no.*/
-    function addTask(){
+    function addTask(): void{
         if(inputTaskValue !== ''){  
             setTaskState(
                 [
@@ -124,13 +149,14 @@ export default function ToDo(){
         }
     }
 
-    function checkTask(taskId){
-        /*For this function, we dont have to return or copy all the element in the array, why?
+    function checkTask(taskId: number): void{
+        /*For this function, we don't have to return or copy all the element in the array, why?
         Because, .map already make an array with all the elements and same length so, we can modify
         the element that we want implementing 'taskId === t.id' in that way when we reach that 
-        element, we will modify it (remebering that we have to copy their old props). Otherwise,
+        element, we will modify it (remembering that we have to copy their old props). Otherwise,
         we'll just return the elements that doesn't match with the condition.*/
-        let newTasks = taskState.map(t => {
+
+        let newTasks = taskState.map(t => { //Change let for const & find a better way to check tasks
             if(taskId === t.id){
                 return {...t, done: !t.done}
             }else{
@@ -140,15 +166,17 @@ export default function ToDo(){
         setTaskState(newTasks);
     }
     
-    function deleteTask(taskId){
+    function deleteTask(taskId: number): void{
        setTaskState(taskState.filter(t => t.id !== taskId));
     }
 
-    function clearTasksCompleted(){
+    function clearTasksCompleted(): void{
         setTaskState(taskState.filter(t => t.done !== true));
     }
-    //-----------END-------------ADD, DELETE, CHECK, CLEAR FUNCTIONS--------------END----------
 
+    function handleFilterChange(text: currentFilterStatus): void{
+        setFilter(text);
+    }
     return(
         <div>
             <div className="todo-container">
@@ -168,7 +196,7 @@ export default function ToDo(){
                     {//Here we just switched taskState for filterList because it has the logic to filter the tasks
                     filterList.map(t => {
                         return(
-                            <Task {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></Task>
+                            <TaskItem {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></TaskItem>
                         )
                     })}
                 </ul>
@@ -176,7 +204,7 @@ export default function ToDo(){
                     currentFilter={filter}
                     itemsLeft={pendingTasks} //Passing prop (variable) of how many items
                     onClear={clearTasksCompleted} //Passing prop (function) to clear items
-                    onChange={setFilter} //Passing prop (functions) to setFilter(value)
+                    onChange={handleFilterChange} //Passing prop (functions) to setFilter(value)
                 > 
                 </FilterButtons>
             </div>
@@ -185,4 +213,3 @@ export default function ToDo(){
         </div>
     );
 }
-//------------START--------------MAIN COMPONENT (TO DO)----------START--------------//
