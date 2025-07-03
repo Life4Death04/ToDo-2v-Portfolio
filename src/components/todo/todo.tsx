@@ -99,6 +99,7 @@ function FilterButtons({
 interface InitialTaskType {
     todos: [];
     nextId: number;
+    filterValue: string;
 }
 
 const initialTask: InitialTaskType = {
@@ -108,6 +109,7 @@ const initialTask: InitialTaskType = {
         {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true} */
     ],
     nextId: 0,
+    filterValue: 'all',
 }
 
 export default function ToDo(){
@@ -127,10 +129,9 @@ export default function ToDo(){
     }, [darkMode]); //This effect will run whenever darkMode changes
 
     //State for filterable buttons
-    const [filter, setFilter] = useState<currentFilterStatus>('all');
     let filterList = taskReducerState.todos.filter(t => {
-        if(filter === 'active') return !t.done;
-        if(filter === 'completed') return t.done;
+        if(taskReducerState.filterValue === 'active') return !t.done;
+        if(taskReducerState.filterValue === 'completed') return t.done;
         return true;
     })
 
@@ -164,12 +165,12 @@ export default function ToDo(){
     }
 
     function clearTasksCompleted(): void{
-        /* setTaskState(taskState.filter(t => t.done !== true)); */
         dispatch({type: 'clear_completed'}); //Using useReducer to clear completed tasks
     }
 
     function handleFilterChange(text: currentFilterStatus): void{
-        setFilter(text);
+        /* setFilter(text); */
+        dispatch({type: 'set_filter', filter: text}); //Using useReducer to set the filter
     }
     return(
         <div>
@@ -194,7 +195,7 @@ export default function ToDo(){
                     })}
                 </ul>
                 <FilterButtons 
-                    currentFilter={filter}
+                    currentFilter={taskReducerState.filterValue} //Passing prop (variable) of the current filter
                     itemsLeft={pendingTasks} //Passing prop (variable) of how many items
                     onClear={clearTasksCompleted} //Passing prop (function) to clear items
                     onChange={handleFilterChange} //Passing prop (functions) to setFilter(value)
@@ -208,6 +209,7 @@ export default function ToDo(){
 
 //-----------------------------USE REDUCER-----------------------------
 
+//I know this shouldn't be here, but I want to keep the reducer in the because I got some problems
 function todoReducer(tasks, action){
     switch(action.type) {
         case 'add_task':
@@ -217,6 +219,7 @@ function todoReducer(tasks, action){
                 done: false
             };
             return {
+                ...tasks,
                 todos: [...tasks.todos, newTask],
                 nextId: tasks.nextId + 1
             };
@@ -232,9 +235,14 @@ function todoReducer(tasks, action){
                     task.id === action.taskId ? {...task, done: !task.done} : task
                 )
             }
+        case 'set_filter':
+            return {
+                ...tasks,
+                filterValue: action.filter
+            }
         case 'clear_completed':
             return {
-                tasks,
+                ...tasks,
                 todos: tasks.todos.filter(task => !task.done),
             }
         default:
