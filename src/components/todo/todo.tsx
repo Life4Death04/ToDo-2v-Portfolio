@@ -97,16 +97,16 @@ function FilterButtons({
  * @description ToDo component is the main component that manages the state of the to-do list, including adding, checking, deleting tasks, and filtering them.
  */
 interface InitialTaskType {
-    todos: [];
+    todos: [...{id: number; description: string; done: boolean}]; //Array of tasks
     nextId: number;
     filterValue: string;
 }
 
 const initialTask: InitialTaskType = {
     todos: [
-        /* {id: -1, description: 'Implementar TypeScript', done: true},
+        {id: -1, description: 'Implementar TypeScript', done: true},
         {id: -2, description: 'Implementar JSDoc (manera de documentar)', done: true},
-        {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true} */
+        {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true}
     ],
     nextId: 0,
     filterValue: 'all',
@@ -143,7 +143,6 @@ export default function ToDo(){
             dispatch({
                 type: 'add_task',
                 description: inputTaskValue,
-                done: false
             })
             setInputTaskValue('');
         }else{
@@ -210,7 +209,25 @@ export default function ToDo(){
 //-----------------------------USE REDUCER-----------------------------
 
 //I know this shouldn't be here, but I want to keep the reducer in the because I got some problems
-function todoReducer(tasks, action){
+interface todoReducerProps {
+    tasks: {},
+    action: {
+        type: string;
+        description?: string;
+        taskId?: number;
+        filter?: currentFilterStatus;
+    }
+}
+
+type TodoAction = 
+    | { type: 'add_task'; description: string }
+    | { type: 'delete_task'; taskId: number }
+    | { type: 'check_task'; taskId: number }
+    | { type: 'clear_completed' }
+    | { type: 'set_filter'; filter: currentFilterStatus };
+
+
+function todoReducer(tasks, action: TodoAction): todoReducerProps{
     switch(action.type) {
         case 'add_task':
             const newTask = {
