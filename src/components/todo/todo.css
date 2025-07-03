@@ -1,8 +1,26 @@
 :root{
+    --background: #fff;
+    --color-text: #000;
+    --color-text-icon: #2c3a68;
+    --color-text-filter-buttons: rgba(0, 0, 0, .5);
+    --color-text-filter-button-active: #000;
+    --color-text-task: #000;
+    --color-action-buttons: #000;
+    --input-background: #ebecef;
     --orange-buttons: #f3573f;
-    --blue-text-icon: #2c3a68;
-    --gray-inputs-background: #ebecef;
     --gray-checked-tasks: #908e8e;
+}
+
+.dark {
+    --background: #1e293b;
+    --foreground: #2c3a68;
+    --color-text: #fff;
+    --color-text-icon: #fff;
+    --color-text-filter-buttons: #637084;
+    --color-text-filter-button-active: #5f6ab8;
+    --color-text-task: #7c8998;
+    --color-action-buttons: #78879b;
+    --input-background: #334054;
 }
 
 /*----START-----STYLES FOR MAIN COMPONENT (TO DO)------START-------*/
@@ -10,7 +28,7 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: var(--background);
     width: 600px; height: auto; max-height: 650px;
     display: flex;
     flex-direction: column;
@@ -18,10 +36,28 @@
     border-radius: 10px;
 }
 
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .icon{
+    display: inline-flex;
     font-size: 1.6rem;
     font-weight: bold;
-    color: var(--blue-text-icon);
+    color: var(--color-text-icon);
+}
+
+.toggleTheme-btn{
+    display: inline-flex;
+    background-color: transparent;
+    color: var(--color-action-buttons);
+}
+
+.toggleTheme-btn:hover{
+    cursor: pointer;
+    color: var(--orange-buttons);
 }
 
 .input-task-container{
@@ -29,11 +65,12 @@
 }
 
 #input-task{
-    background-color: var(--gray-inputs-background);
+    background-color: var(--input-background);
+    color: var(--color-text);
     font-size: 1.2rem;
     margin: 1rem 0;
     padding: 1rem 2rem;
-    border-radius: 50px;
+    border-radius: 10px;
     width: 100%;
 }
 
@@ -45,8 +82,8 @@
     color: #fff;
     font-size: 1.2rem;
     width: fit-content;
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
 }
 
 #addTask-btn:hover{
@@ -67,8 +104,10 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: .8rem 0;
+    background-color: var(--input-background);
+    padding: .8rem 1rem;
     margin-bottom: 1rem;
+    border-radius: 10px;
 }
 
 .checkTask-btn-false::before{
@@ -111,17 +150,20 @@
 }   
 
 .descriptionTask-false{
+    color: var(--color-text-task);
     font-size: 1.2rem;
     padding-left: 3rem;
 }   
 
 .deleteTask-btn{
     margin-left: auto;
-    background-color: #fff;
+    background-color: transparent;
+    color: var(--color-action-buttons);
 }
 
 .deleteTask-btn:hover{
     cursor: pointer;
+    color: var(--orange-buttons);
 }
 /*----END----STYLES FOR TASK COMPONENT-----END-------*/
 
@@ -138,7 +180,7 @@
 
 .modalContent{
     height: fit-content;
-    background-color: #fff;
+    background-color: var(--background);
     padding: 2rem; margin: 8rem;
     border-radius: 15px;
     box-shadow: .1rem .1rem .1rem .1rem rgba(0, 0, 0, .5);
@@ -146,6 +188,7 @@
 
 .modalContent p{
     font-size: 1.5rem;
+    color: var(--color-text);
 }
 /*----END----STYLES FOR MODAL MESSAGE----END----*/
 
@@ -157,29 +200,29 @@
     align-items: center;
     justify-content: space-around;
     padding: .5rem 0;
-    color: rgba(0, 0, 0, .5);
-    border-top: 1px solid #000;
+    color: var(--color-text-filter-buttons);
+    border-top: 1px solid var(--color-text);
 }
 
 .filterButtons-container{
     display: flex;
-    gap: .8rem;
+    gap: 2rem;
 }
 
 .filterButtons{
     font-size: 1rem;
     background-color: transparent;
-    color: rgba(0, 0, 0, .5);
+    color: var(--color-text-filter-buttons);
 }
 
 .filterButtons:hover{
     cursor: pointer;
-    color: rgba(0, 0, 0, 1);
+    color: var(--color-text-filter-button-active);
 }
 
 .active{
     font-weight: bold;
-    color: rgba(0, 0, 0, 1);
+    color: var(--color-text-filter-button-active);
 }
 /*----END----STYLE FOR FILTERABLE BUTTONS----END----*/
 
@@ -201,8 +244,12 @@
         width: 100%;
         padding: .8rem 0;
         text-align: center;
-        background-color: #fff;
+        background-color: var(--background);
         border-radius: 10px;    
+    }
+
+    .filterButtons-container .filterButtons{
+        margin: 0 auto;
     }
 
     .allFilter{

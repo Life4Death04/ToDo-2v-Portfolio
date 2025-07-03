@@ -1,6 +1,10 @@
 import './todo.css'
-import { IoCloseSharp } from "react-icons/io5"; //Icons import 
+import { FaRegTrashAlt } from "react-icons/fa"; //Icons import 
+import { FiSun } from "react-icons/fi";
+import { FiMoon } from "react-icons/fi";
+
 import {useState} from 'react';
+import {useEffect} from 'react';
 
 interface InitialTaskType {
     id: number;
@@ -10,7 +14,7 @@ interface InitialTaskType {
 
 const initialTask: InitialTaskType[] = [
     {id: -1, description: 'Implementar TypeScript', done: true},
-    {id: -2, description: 'Implementar JSDoc (manera de documentar)', done: false},
+    {id: -2, description: 'Implementar JSDoc (manera de documentar)', done: true},
     {id: -3, description: 'Crear funcion para abstraer el setFilter (manejar filtrado)', done: true}
 ]
 
@@ -36,7 +40,7 @@ function TaskItem({id, description, done, onCheck, onDelete}: TaskItemProps){ //
             <span className={done ? 'checkTask-btn-active' : 'checkTask-btn-false'} onClick={onCheck}></span>
             <p className={done ? 'descriptionTask-active' : 'descriptionTask-false'}>{description}</p>
             <button onClick={onDelete} className="deleteTask-btn">
-                <IoCloseSharp size={25}></IoCloseSharp>
+                <FaRegTrashAlt size={20}/>
             </button>
         </li>
     );
@@ -111,8 +115,14 @@ export default function ToDo(){
     const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
     const [nextId, setNextId] = useState<number>(0); //Next id for the task
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
+
+    const [darkMode, setDarkMode] = useState<boolean>(false) //State for dark mode toggle
     
     let pendingTasks:number = taskState.filter(t => !t.done).length; // Count how many tasks are not done
+
+    useEffect(() => {
+        document.body.className = darkMode ? 'dark' : ''; //Change the body class to dark or light mode
+    }, [darkMode]); //This effect will run whenever darkMode changes
 
     //State for filterable buttons
     const [filter, setFilter] = useState<currentFilterStatus>('all');
@@ -123,7 +133,7 @@ export default function ToDo(){
     })
 
     /*I just lift up the code to let the father component to manage all the functions. Because I think is dumb
-    let the childs having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
+    let the child having those 3 functions by themselves, besides If I create 1000 task, then will be like 3000
     of functions and no.*/
     function addTask(): void{
         if(inputTaskValue !== ''){  
@@ -171,7 +181,12 @@ export default function ToDo(){
     return(
         <div>
             <div className="todo-container">
-                <span className='icon'>To-Do List</span>
+                <header>  
+                    <span className='icon'>To-Do List</span>
+                    <button className='toggleTheme-btn' onClick={() => setDarkMode(mode => !mode)}>
+                        {darkMode ? <FiMoon size={25}/> : <FiSun size={25} />}
+                    </button>
+                </header>
                 <div className="input-task-container">
                     <input type="text" name="" id="input-task" placeholder="Add your task" value={inputTaskValue} onChange={(e) => {
                         setInputTaskValue(e.target.value);
