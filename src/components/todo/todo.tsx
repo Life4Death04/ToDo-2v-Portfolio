@@ -115,6 +115,7 @@ export default function ToDo(){
     const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
     const [nextId, setNextId] = useState<number>(0); //Next id for the task
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
+
     const [darkMode, setDarkMode] = useState<boolean>(false) //State for dark mode toggle
     
     let pendingTasks:number = taskState.filter(t => !t.done).length; // Count how many tasks are not done

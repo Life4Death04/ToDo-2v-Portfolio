@@ -220,10 +220,6 @@ header{
     color: var(--color-text-filter-button-active);
 }
 
-.allFilter{
-    margin: 0 .8rem;
-}
-
 .active{
     font-weight: bold;
     color: var(--color-text-filter-button-active);
