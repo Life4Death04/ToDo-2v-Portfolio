@@ -3,8 +3,7 @@ import { FaRegTrashAlt } from "react-icons/fa"; //Icons import
 import { FiSun } from "react-icons/fi";
 import { FiMoon } from "react-icons/fi";
 
-import {useState} from 'react';
-import {useEffect} from 'react';
+import {useState, useEffect, useReducer} from 'react';
 
 interface InitialTaskType {
     id: number;
@@ -111,14 +110,17 @@ function FilterButtons({
  */
 export default function ToDo(){
     //State for the list of tasks
-    const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask); //Initial tasks for the to-do list
+    /* const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask); //Initial tasks for the to-do list */
+
+    const [taskReducerState, dispatch] = useReducer(todoReducer, initialTask); //Using useReducer to manage tasks
+
     const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
     const [nextId, setNextId] = useState<number>(0); //Next id for the task
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
 
     const [darkMode, setDarkMode] = useState<boolean>(false) //State for dark mode toggle
     
-    let pendingTasks:number = taskState.filter(t => !t.done).length; // Count how many tasks are not done
+    let pendingTasks:number = taskReducerState.filter(t => !t.done).length; // Count how many tasks are not done
 
     useEffect(() => {
         document.body.className = darkMode ? 'dark' : ''; //Change the body class to dark or light mode
@@ -126,7 +128,7 @@ export default function ToDo(){
 
     //State for filterable buttons
     const [filter, setFilter] = useState<currentFilterStatus>('all');
-    let filterList = taskState.filter(t => {
+    let filterList = taskReducerState.filter(t => {
         if(filter === 'active') return !t.done;
         if(filter === 'completed') return t.done;
         return true;
@@ -137,12 +139,13 @@ export default function ToDo(){
     of functions and no.*/
     function addTask(): void{
         if(inputTaskValue !== ''){  
-            setTaskState(
-                [
-                    ...taskState,
-                    {id: nextId, description: inputTaskValue, done: false}
-                ]
-            )
+            dispatch({
+                type: 'add_task',
+                id: nextId,
+                description: inputTaskValue,
+                done: false
+            })
+
             setNextId(prev => prev + 1);
             setInputTaskValue('');
         }else{
@@ -156,23 +159,16 @@ export default function ToDo(){
         the element that we want implementing 'taskId === t.id' in that way when we reach that 
         element, we will modify it (remembering that we have to copy their old props). Otherwise,
         we'll just return the elements that doesn't match with the condition.*/
-
-        let newTasks = taskState.map(t => { //Change let for const & find a better way to check tasks
-            if(taskId === t.id){
-                return {...t, done: !t.done}
-            }else{
-                return t;
-            }
-        })
-        setTaskState(newTasks);
+        dispatch({type: 'check_task', taskId: taskId}); //Using useReducer to check the task
     }
     
     function deleteTask(taskId: number): void{
-       setTaskState(taskState.filter(t => t.id !== taskId));
+       dispatch({type: 'delete_task', taskId: taskId}); //Using useReducer to delete the task
     }
 
     function clearTasksCompleted(): void{
-        setTaskState(taskState.filter(t => t.done !== true));
+        /* setTaskState(taskState.filter(t => t.done !== true)); */
+        dispatch({type: 'clear_completed'}); //Using useReducer to clear completed tasks
     }
 
     function handleFilterChange(text: currentFilterStatus): void{
@@ -194,10 +190,9 @@ export default function ToDo(){
                     <button id="addTask-btn" onClick={addTask}>Add</button>
                 </div>
                 <ul className="todo-tasks-content">
-                    {//Here we just switched taskState for filterList because it has the logic to filter the tasks
-                    filterList.map(t => {
+                    {taskReducerState.map((t) => {
                         return(
-                            <TaskItem {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></TaskItem>
+                            <TaskItem {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></TaskItem> //Using key prop to avoid React warning  
                         )
                     })}
                 </ul>
@@ -209,8 +204,25 @@ export default function ToDo(){
                 > 
                 </FilterButtons>
             </div>
-            
             <ModalMessage isOpen={isModalOpen} onClose={() => {setIsModalOpen(false)}}></ModalMessage>
         </div>
     );
+}
+
+//-----------------------------USE REDUCER-----------------------------
+function todoReducer(tasks, action){
+    switch(action.type) {
+        case 'add_task':
+            return [...tasks, {id: action.id, description: action.description, done: action.done}];
+        case 'delete_task':
+            return tasks.filter(task => task.id !== action.taskId);
+        case 'check_task':
+            return tasks.map(task => 
+                task.id === action.taskId ? {...task, done: !task.done} : task
+            );
+        case 'clear_completed':
+            return tasks.filter(task => task.done !== true);    
+        default:
+            return tasks;
+    }
 }
