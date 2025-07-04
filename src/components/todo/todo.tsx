@@ -3,7 +3,7 @@ import { FaRegTrashAlt } from "react-icons/fa"; //Icons import
 import { FiSun } from "react-icons/fi";
 import { FiMoon } from "react-icons/fi";
 
-import {useState, useEffect, useReducer} from 'react';
+import {useState, useEffect, useReducer, useContext, createContext} from 'react';
 
 type TaskItemProps = {
     id: number;
@@ -21,9 +21,9 @@ type TaskItemProps = {
  * @param onCheck{function} - Function to handle the task check action
  * @param onDelete{function} - Function to handle the task delete action
  */
-function TaskItem({id, description, done, onCheck, onDelete}: TaskItemProps){ //Change Task for TaskItem
+function TaskItem({ description, done, onCheck, onDelete}: TaskItemProps){ //Change Task for TaskItem
     return(
-        <li key={id} className='task-container'>
+        <li className='task-container'>
             <span className={done ? 'checkTask-btn-active' : 'checkTask-btn-false'} onClick={onCheck}></span>
             <p className={done ? 'descriptionTask-active' : 'descriptionTask-false'}>{description}</p>
             <button onClick={onDelete} className="deleteTask-btn">
@@ -114,20 +114,18 @@ const initialTask: InitialTaskType = {
 
 export default function ToDo(){
     //State for the list of tasks
-    /* const [taskState, setTaskState] = useState<InitialTaskType[]>(initialTask); //Initial tasks for the to-do list */
-
     const [taskReducerState, dispatch] = useReducer(todoReducer, initialTask); //Using useReducer to manage tasks
 
     const [inputTaskValue, setInputTaskValue] = useState<string>(''); //State for the input value of the ToDo
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //Code for the modal operations
 
-    const [darkMode, setDarkMode] = useState<boolean>(false) //State for dark mode toggle
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(false) //State for dark mode toggle
     
     let pendingTasks:number = taskReducerState.todos.filter(t => !t.done).length; // Count how many tasks are not done
 
     useEffect(() => {
-        document.body.className = darkMode ? 'dark' : ''; //Change the body class to dark or light mode
-    }, [darkMode]); //This effect will run whenever darkMode changes
+        document.body.className = isDarkMode ? 'dark' : ''; //Change the body class to dark or light mode
+    }, [isDarkMode]); //This effect will run whenever darkMode changes
 
     //State for filterable buttons
     let filterList = taskReducerState.todos.filter(t => {
@@ -174,35 +172,37 @@ export default function ToDo(){
     }
     return(
         <div>
-            <div className="todo-container">
-                <header>  
-                    <span className='icon'>To-Do List</span>
-                    <button className='toggleTheme-btn' onClick={() => setDarkMode(mode => !mode)}>
-                        {darkMode ? <FiMoon size={25}/> : <FiSun size={25} />}
-                    </button>
-                </header>
-                <div className="input-task-container">
-                    <input type="text" name="" id="input-task" placeholder="Add your task" value={inputTaskValue} onChange={(e) => {
-                        setInputTaskValue(e.target.value);
-                    }}/>
-                    <button id="addTask-btn" onClick={addTask}>Add</button>
+            <ThemeContext value={isDarkMode}>
+                <div className="todo-container">
+                    <header>  
+                        <span className='icon'>To-Do List</span>
+                        <button className='toggleTheme-btn' onClick={() => {setIsDarkMode(!isDarkMode)}}>
+                            {isDarkMode ? <FiMoon size={25}/> : <FiSun size={25} />}
+                        </button>
+                    </header>
+                    <div className="input-task-container">
+                        <input type="text" name="" id="input-task" placeholder="Add your task" value={inputTaskValue} onChange={(e) => {
+                            setInputTaskValue(e.target.value);
+                        }}/>
+                        <button id="addTask-btn" onClick={addTask}>Add</button>
+                    </div>
+                    <ul className="todo-tasks-content">
+                        {filterList.map((t) => {
+                            return(
+                                <TaskItem key={t.id} {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></TaskItem> //Using key prop to avoid React warning  
+                            )
+                        })}
+                    </ul>
+                    <FilterButtons 
+                        currentFilter={taskReducerState.filterValue} //Passing prop (variable) of the current filter
+                        itemsLeft={pendingTasks} //Passing prop (variable) of how many items
+                        onClear={clearTasksCompleted} //Passing prop (function) to clear items
+                        onChange={handleFilterChange} //Passing prop (functions) to setFilter(value)
+                    > 
+                    </FilterButtons>
                 </div>
-                <ul className="todo-tasks-content">
-                    {filterList.map((t) => {
-                        return(
-                            <TaskItem {...t} onCheck={() => {checkTask(t.id)}} onDelete={() => {deleteTask(t.id)}}></TaskItem> //Using key prop to avoid React warning  
-                        )
-                    })}
-                </ul>
-                <FilterButtons 
-                    currentFilter={taskReducerState.filterValue} //Passing prop (variable) of the current filter
-                    itemsLeft={pendingTasks} //Passing prop (variable) of how many items
-                    onClear={clearTasksCompleted} //Passing prop (function) to clear items
-                    onChange={handleFilterChange} //Passing prop (functions) to setFilter(value)
-                > 
-                </FilterButtons>
-            </div>
-            <ModalMessage isOpen={isModalOpen} onClose={() => {setIsModalOpen(false)}}></ModalMessage>
+                <ModalMessage isOpen={isModalOpen} onClose={() => {setIsModalOpen(false)}}></ModalMessage>
+            </ThemeContext>
         </div>
     );
 }
@@ -267,3 +267,8 @@ function todoReducer(tasks, action: TodoAction): todoReducerProps{
             return tasks;
     }
 }
+
+//-----------------------------USE CONTEXT-----------------------------
+type ThemeContextProps = boolean;
+
+export const ThemeContext = createContext<ThemeContextProps>(false); // Default value is true (light theme)
