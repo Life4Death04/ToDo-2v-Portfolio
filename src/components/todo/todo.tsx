@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import './todo.css'
 import { FaRegTrashAlt } from "react-icons/fa"; //Icons import 
 import { FiSun } from "react-icons/fi";
@@ -126,6 +128,18 @@ export default function ToDo(){
     useEffect(() => {
         document.body.className = isDarkMode ? 'dark' : ''; //Change the body class to dark or light mode
     }, [isDarkMode]); //This effect will run whenever darkMode changes
+
+
+    useEffect(() =>{
+        const fetchTodos = async () =>{
+            const res = await axios.get('http://localhost:3000/user/find/4')
+
+            console.log(res.data)
+        };
+
+        fetchTodos();
+    })
+
 
     //State for filterable buttons
     let filterList = taskReducerState.todos.filter(t => {
