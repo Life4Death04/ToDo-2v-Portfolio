@@ -1,0 +1,103 @@
+:root{
+    --background: #fff;
+    --color-text: #000;
+    --color-text-icon: #2c3a68;
+    --color-text-filter-buttons: rgba(0, 0, 0, .5);
+    --color-text-filter-button-active: #000;
+    --color-text-task: #000;
+    --color-action-buttons: #000;
+    --input-background: #ebecef;
+    --orange-buttons: #f3573f;
+    --gray-checked-tasks: #908e8e;
+}
+
+.dark {
+    --background: #1e293b;
+    --foreground: #2c3a68;
+    --color-text: #fff;
+    --color-text-icon: #fff;
+    --color-text-filter-buttons: #637084;
+    --color-text-filter-button-active: #5f6ab8;
+    --color-text-task: #7c8998;
+    --color-action-buttons: #78879b;
+    --input-background: #334054;
+}
+
+/*---------------LOGIN & REGISTER DESIGN----------------*/
+.auth-container{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: var(--background);
+    width: 600px; height: auto; max-height: 650px;
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.auth-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0 1rem;
+}
+
+span{
+    font-size: 2rem;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 1rem;
+    min-height: 180px;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+form input{
+    padding: 1rem 1rem;
+    font-size: 1rem;
+    box-shadow: .1rem .1rem .1rem .1rem rgba(0, 0, 0, .3);
+    border-radius: 20px;
+}
+
+#submit-btn{
+    background-color: var(--orange-buttons);
+    color: var(--input-background);
+    padding: 1rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
+#submit-btn:hover{
+    cursor: pointer;
+}
+
+#register-btn{
+    background-color: var(--background);
+    color: var(--color-text);
+    box-shadow: .1rem .1rem .1rem .1rem rgba(0, 0, 0, .3);
+    padding: 1rem 1rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+#register-btn:hover{
+    cursor: pointer;
+}
+
+a{
+    color: var(--orange-buttons);
+    text-align: center;
+}
+
+/*----------REGISTER STYLE-------*/
+
+.input-row{
+    display: flex;
+    justify-content: space-between;
+}
