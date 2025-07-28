@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import './authStyles.css'
 
 export default function Login(){
@@ -10,8 +11,9 @@ export default function Login(){
                     <input type="password" name="" id="input-password" placeholder="Password"/>
                     <button type="submit" id="submit-btn">Login</button>
                 </form>
-                <button id="register-btn">Register</button>
-                <a href="#">Forgot password?</a>
+                <Link id="register-btn" to={'/user/register'}>
+                    <button>Register</button>
+                </Link>
             </div>
         </div>
     )

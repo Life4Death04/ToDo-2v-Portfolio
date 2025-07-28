@@ -7,7 +7,7 @@ import Register from './components/auth/register.tsx';
 
 function App() {
   return (
-    <Login></Login>
+    <ToDo></ToDo>
   );
 }
 

@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import './authStyles.css'
 
 export default function Register(){
@@ -15,7 +16,9 @@ export default function Register(){
                     <input type="confirmPassword" name="confirmPassword" id="confirmPassword-input" placeholder="Confirm password"/>
                     <button type="submit" id="submit-btn">Register</button>
                 </form>
-                <a href="#" id="login-btn">You already have an account?</a>
+                <Link to={'/user/login'}>
+                    <button id="login-btn" >You alreay have an account?</button>
+                </Link>
             </div>
         </div>
     );

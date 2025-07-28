@@ -90,7 +90,8 @@ form input{
     cursor: pointer;
 }
 
-a{
+button{
+    background-color: transparent;
     color: var(--orange-buttons);
     text-align: center;
 }
