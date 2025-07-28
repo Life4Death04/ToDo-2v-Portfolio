@@ -4,10 +4,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+//React Router Imports
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import ToDo from './components/todo/todo.tsx';
+import Login from './components/auth/login.tsx';
+import Register from './components/auth/register.tsx';
+
+const router = createBrowserRouter([
+  { path: '/', element: <ToDo></ToDo> },
+  { path: '/user/login', element: <Login></Login>},
+  { path: '/user/register', element: <Register></Register>}
+])
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}></RouterProvider>
   </React.StrictMode>
 );
 
